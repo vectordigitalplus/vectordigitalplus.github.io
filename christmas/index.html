@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f3d34">
+<title>Christmas Pocket Kit</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Pocket Kit">
+<style>
+:root{
+  --bg:#fbf6ee; --card:#ffffff; --ink:#1d2a26; --muted:#5f6b66; --line:#e8dfd2;
+  --green:#1f3d34; --green2:#2f5a4c; --berry:#b23a48; --gold:#d9a441; --mint:#e3efe9; --blush:#f6e1e3; --sand:#f3ead9;
+  --r:18px;
+}
+body.dark{ --bg:#14201c; --card:#1c2b26; --ink:#eef3f0; --muted:#a8b6b0; --line:#2c3d37; --mint:#21372f; --blush:#3a2328; --sand:#2b2a22; }
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:17px;line-height:1.45;-webkit-text-size-adjust:100%;padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+header{background:var(--green);color:#fff;padding:calc(14px + env(safe-area-inset-top)) 18px 14px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:5}
+header h1{font-size:19px;margin:0;font-weight:700;letter-spacing:.2px;flex:1}
+header .star{color:var(--gold);font-size:20px}
+header button{background:rgba(255,255,255,.12);border:0;color:#fff;border-radius:12px;padding:8px 10px;font-size:15px}
+main{max-width:620px;margin:0 auto;padding:16px}
+section.page{display:none} section.page.on{display:block}
+h2{font-size:23px;margin:6px 0 4px} h3{font-size:18px;margin:18px 0 8px}
+p.sub{color:var(--muted);margin:0 0 14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin:0 0 14px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:14px;padding:13px 16px;font-size:16px;font-weight:600;background:var(--green);color:#fff;cursor:pointer;min-height:48px}
+.btn.alt{background:var(--mint);color:var(--ink)} .btn.berry{background:var(--berry)} .btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink)}
+.btn.full{width:100%} .row{display:flex;gap:10px;flex-wrap:wrap} .row>*{flex:1}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:9px 13px;font-size:15px;cursor:pointer}
+.chip.on{background:var(--green);color:#fff;border-color:var(--green)}
+input,select,textarea{width:100%;font:inherit;padding:12px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--ink)}
+label{font-weight:600;font-size:15px;display:block;margin:12px 0 6px}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:6px 4px calc(6px + env(safe-area-inset-bottom));z-index:6}
+nav button{background:none;border:0;color:var(--muted);font-size:11.5px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 4px;min-width:56px;cursor:pointer}
+nav button span{font-size:21px;line-height:1}
+nav button.on{color:var(--berry);font-weight:700}
+/* battery */
+.batt{display:flex;align-items:center;gap:14px}
+.battShell{flex:1;height:54px;border:3px solid var(--ink);border-radius:12px;position:relative;padding:4px}
+.battShell:after{content:"";position:absolute;right:-10px;top:15px;width:7px;height:18px;background:var(--ink);border-radius:0 4px 4px 0}
+.battFill{height:100%;border-radius:7px;transition:width .4s,background .4s}
+.battNum{font-size:34px;font-weight:800;min-width:84px;text-align:right}
+.tip{background:var(--sand);border-radius:14px;padding:12px 14px;margin-top:12px}
+.drain{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.drain button{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:11px 8px;font-size:14.5px;text-align:left;cursor:pointer}
+.drain button b{display:block;font-size:13px;color:var(--berry)} .drain button.plus b{color:var(--green2)}
+/* full-screen show card */
+#show{position:fixed;inset:0;z-index:20;display:none;align-items:center;justify-content:center;flex-direction:column;padding:30px;text-align:center}
+#show.on{display:flex}
+#show .big{font-size:clamp(30px,8.5vw,54px);font-weight:800;line-height:1.15;max-width:760px}
+#show .small{white-space:pre-line;font-size:20px;margin-top:20px;opacity:.85}
+#show .close{position:absolute;bottom:calc(26px + env(safe-area-inset-bottom));background:rgba(255,255,255,.25);color:inherit;border:0;border-radius:999px;padding:12px 22px;font-size:16px}
+.bc{border-radius:16px;padding:16px;margin-bottom:10px;cursor:pointer;font-weight:700;font-size:18px;border:0;width:100%;text-align:left}
+.reply{border-left:4px solid var(--green2);padding:8px 12px;margin:8px 0;background:var(--mint);border-radius:0 12px 12px 0;cursor:pointer}
+.reply small{display:block;color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+.toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;opacity:0;transition:.3s;z-index:30;pointer-events:none}
+.toast.on{opacity:1}
+.plan li{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px dashed var(--line);list-style:none}
+.plan{padding:0;margin:0}
+.plan .t{font-weight:700;min-width:52px}.plan .n{flex:1}
+.cost{font-size:12px;border-radius:999px;padding:3px 8px;font-weight:700}
+.c-1{background:var(--mint)} .c-2{background:var(--sand)} .c-3{background:var(--blush)} .c--2{background:#d6ecdf;color:#1f5a3e}
+.x{background:none;border:0;color:var(--muted);font-size:20px;cursor:pointer}
+.meter{height:14px;border-radius:999px;background:var(--line);overflow:hidden;margin:8px 0}
+.meter i{display:block;height:100%}
+.check{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px dashed var(--line)}
+.check input{width:24px;height:24px;flex:none;margin-top:1px}
+.check.done span{text-decoration:line-through;color:var(--muted)}
+.out{white-space:pre-wrap;background:var(--sand);border-radius:14px;padding:14px;font-size:16px}
+.step{display:none}.step.on{display:block}
+.note{font-size:13.5px;color:var(--muted)}
+.hero{background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;border-radius:22px;padding:18px;margin-bottom:14px}
+.hero b{color:var(--gold)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;cursor:pointer;text-align:left;color:var(--ink);font-size:15px}
+.tile span{font-size:26px;display:block;margin-bottom:4px}
+.tile b{display:block;font-size:16px}
+@media print{nav,header,#show{display:none!important}}
+</style>
+</head>
+<body>
+<header><span class="star">✦</span><h1>Christmas Pocket Kit</h1><button id="darkBtn" aria-label="Dark mode">◐</button></header>
+<main>
+
+<!-- HOME -->
+<section class="page on" id="p-home">
+  <div class="hero">
+    <div style="font-size:14px;opacity:.85" id="countdown"></div>
+    <div style="font-size:22px;font-weight:800;margin-top:4px" id="hello">Your Christmas, made manageable.</div>
+    <div style="font-size:15px;margin-top:6px;opacity:.9">Use it <b>on the day</b>, at the table, in the loo, wherever you need it. Everything stays on this device.</div>
+  </div>
+  <div class="grid2">
+    <button class="tile" data-go="battery"><span>🔋</span><b>Social battery</b>How much is left?</button>
+    <button class="tile" data-go="break"><span>🫧</span><b>Quiet break</b>Show-a-card, no words</button>
+    <button class="tile" data-go="replies"><span>💬</span><b>Awkward questions</b>Ready replies</button>
+    <button class="tile" data-go="exit"><span>🚪</span><b>Exit plan</b>Leave kindly, on time</button>
+    <button class="tile" data-go="plan"><span>🗓️</span><b>Energy plan</b>Christmas Day budget</button>
+    <button class="tile" data-go="gifts"><span>🎁</span><b>Gift rescue</b>Decide in 60 seconds</button>
+    <button class="tile" data-go="me"><span>🧩</span><b>My needs card</b>For family to read</button>
+    <button class="tile" data-go="reset"><span>🧺</span><b>After Christmas</b>Low-energy reset</button>
+  </div>
+  <p class="note" style="margin-top:14px">ADHD-friendly and neurodivergent-friendly self-help tool. Not medical advice or treatment. Skip anything that isn't useful to you.</p>
+</section>
+
+<!-- BATTERY -->
+<section class="page" id="p-battery">
+  <h2>Social battery</h2><p class="sub">Tap what just happened. The app does the maths, so you don't have to notice you're drained.</p>
+  <div class="card">
+    <div class="batt"><div class="battShell"><div class="battFill" id="battFill"></div></div><div class="battNum" id="battNum">80%</div></div>
+    <div class="tip" id="battTip"></div>
+    <div class="row" style="margin-top:12px"><button class="btn alt" id="battReset">Start of day: 100%</button><button class="btn berry" data-go="break">Take a break</button></div>
+  </div>
+  <h3>What drained me</h3>
+  <div class="drain" id="drainBtns"></div>
+  <h3>What recharged me</h3>
+  <div class="drain" id="plusBtns"></div>
+  <div class="card" style="margin-top:14px">
+    <b>Gentle check-in timer</b>
+    <p class="note" style="margin:4px 0 10px">Buzzes and pops up while this page is open, to ask how full your battery is. Handy when hyperfocus or masking means you forget to check.</p>
+    <div class="row"><select id="checkMins"><option value="0">Off</option><option value="30">Every 30 min</option><option value="45">Every 45 min</option><option value="60">Every hour</option><option value="90">Every 90 min</option></select></div>
+    <p class="note" id="checkNext"></p>
+  </div>
+  <div class="card"><b>Today's log</b><div id="battLog" class="note" style="margin-top:6px">Nothing logged yet.</div></div>
+</section>
+
+<!-- BREAK CARDS -->
+<section class="page" id="p-break">
+  <h2>Quiet break cards</h2><p class="sub">Tap a card. It fills the screen so you can turn your phone round and show it, without having to explain.</p>
+  <div id="breakList"></div>
+  <div class="card"><label for="customCard">Write your own card</label><input id="customCard" placeholder="e.g. Popping out for a walk with the dog – back by 4">
+  <div class="row" style="margin-top:10px"><button class="btn" id="addCard">Save card</button></div></div>
+  <div class="card"><b>Breathing screen</b><p class="note">Slow 4-in, 6-out pacing for when you've stepped away.</p><button class="btn alt full" id="breathBtn">Start 2-minute calm screen</button></div>
+</section>
+
+<!-- REPLIES -->
+<section class="page" id="p-replies">
+  <h2>Awkward-question replies</h2><p class="sub">Pick the question. Tap a reply to copy it or rehearse it. Soft, firm and change-the-subject versions.</p>
+  <div class="chips" id="qChips"></div>
+  <div id="qReplies" style="margin-top:12px"></div>
+  <div class="card"><b>Universal subject changers</b><div id="changers"></div></div>
+</section>
+
+<!-- EXIT -->
+<section class="page" id="p-exit">
+  <h2>Exit plan</h2><p class="sub">Decide before you go, so leaving isn't a decision you have to make when you're already drained.</p>
+  <div class="card">
+    <label>Where are you going?</label><input id="exWhere" placeholder="e.g. Mum's for Christmas dinner">
+    <label>Arrive</label><input id="exArrive" type="time" value="12:30">
+    <label>Leave by (your promise to yourself)</label><input id="exLeave" type="time" value="17:00">
+    <label>Reason you'll give (true and short is best)</label>
+    <div class="chips" id="exReasons"></div>
+    <label>Safe person / partner</label><input id="exSafe" placeholder="e.g. Sam">
+    <label>Secret code word for “I need to go now”</label><input id="exCode" placeholder="e.g. pineapple">
+    <button class="btn full" style="margin-top:14px" id="exMake">Build my exit plan</button>
+  </div>
+  <div id="exOut"></div>
+</section>
+
+<!-- PLAN -->
+<section class="page" id="p-plan">
+  <h2>Christmas Day energy plan</h2><p class="sub">You have a limited number of energy points. Every activity costs some; recovery breaks earn some back. Plan a day that doesn't end in a meltdown or shutdown.</p>
+  <div class="card">
+    <div class="row" style="align-items:center"><b style="flex:2">Energy points today</b><select id="budget" style="flex:1"><option>12</option><option>15</option><option selected>18</option><option>22</option><option>26</option></select></div>
+    <div class="meter"><i id="planBar"></i></div>
+    <div id="planSum" class="note"></div>
+  </div>
+  <div class="card"><ul class="plan" id="planList"></ul></div>
+  <div class="card">
+    <b>Add to the day</b>
+    <div class="row" style="margin-top:8px"><input id="pTime" type="time" value="15:00" style="flex:1"><input id="pName" placeholder="e.g. Board games" style="flex:2"></div>
+    <div class="chips" style="margin-top:10px" id="pCost"></div>
+    <div class="row" style="margin-top:10px"><button class="btn" id="pAdd">Add</button><button class="btn ghost" id="pTemplate">Load UK Christmas Day</button></div>
+  </div>
+  <button class="btn alt full" onclick="window.print()">Print my plan</button>
+</section>
+
+<!-- GIFTS -->
+<section class="page" id="p-gifts">
+  <h2>Gift decision rescue</h2><p class="sub">Choice paralysis is real. Answer 3 questions and get a shortlist, plus permission to stop searching.</p>
+  <div class="card">
+    <div class="step on" data-s="1"><b>1. Who is it for?</b><div class="chips" style="margin-top:10px" id="gWho"></div></div>
+    <div class="step" data-s="2"><b>2. What are they into? (pick any)</b><div class="chips" style="margin-top:10px" id="gLike"></div><button class="btn full" style="margin-top:12px" id="g2">Next</button></div>
+    <div class="step" data-s="3"><b>3. Budget</b><div class="chips" style="margin-top:10px" id="gBud"></div></div>
+    <div class="step" data-s="4"><div id="gOut"></div><button class="btn ghost full" style="margin-top:10px" id="gAgain">Start again</button></div>
+  </div>
+  <div class="card"><b>My gift list</b><p class="note">Tick when bought. Tick again when wrapped. You're done when it's all green.</p>
+    <div class="row"><input id="giftName" placeholder="Name" style="flex:1"><input id="giftIdea" placeholder="Idea" style="flex:2"></div>
+    <button class="btn full" style="margin-top:10px" id="giftAdd">Add person</button>
+    <div id="giftList" style="margin-top:8px"></div>
+  </div>
+</section>
+
+<!-- ME -->
+<section class="page" id="p-me">
+  <h2>My needs card</h2><p class="sub">Fill it in once. Show it to (or send it to) the people you'll spend Christmas with, so you don't have to explain on the day.</p>
+  <div class="card">
+    <label>My name</label><input id="meName" placeholder="Your first name">
+    <label>Things that help me</label><div class="chips" id="meHelp"></div>
+    <label>Things that drain me fast</label><div class="chips" id="meDrain"></div>
+    <label>One thing I'd love you to know</label><textarea id="meNote" rows="3" placeholder="e.g. If I go quiet or leave the room, I'm not upset with anyone – I'm recharging."></textarea>
+    <div class="row" style="margin-top:12px"><button class="btn" id="meShow">Show full screen</button><button class="btn alt" id="meCopy">Copy as message</button></div>
+  </div>
+</section>
+
+<!-- RESET -->
+<section class="page" id="p-reset">
+  <h2>After-Christmas reset</h2><p class="sub">Tiny steps only. Do one, then decide if you want another. Rest counts as a step.</p>
+  <div class="card"><div class="meter"><i id="resetBar" style="background:var(--green2)"></i></div><div id="resetList"></div></div>
+  <button class="btn ghost full" id="resetClear">Untick all</button>
+</section>
+
+</main>
+
+<nav>
+  <button data-go="home" class="on"><span>✦</span>Home</button>
+  <button data-go="battery"><span>🔋</span>Battery</button>
+  <button data-go="break"><span>🫧</span>Break</button>
+  <button data-go="replies"><span>💬</span>Replies</button>
+  <button data-go="exit"><span>🚪</span>Exit</button>
+</nav>
+
+<div id="show"><div class="big" id="showBig"></div><div class="small" id="showSmall"></div><button class="close" id="showClose">Tap to close</button></div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const KEY='cpk_v1';
+let S={batt:80,log:[],cards:[],plan:null,budget:18,gifts:[],me:{help:[],drain:[]},reset:[],dark:false,ex:{}};
+try{const raw=localStorage.getItem(KEY); if(raw) S=Object.assign(S,JSON.parse(raw));}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),1800)};
+const copy=txt=>{(navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast('Copied ✓')).catch(()=>{const a=document.createElement('textarea');a.value=txt;document.body.appendChild(a);a.select();try{document.execCommand('copy');toast('Copied ✓')}catch(e){toast('Select & copy manually')}a.remove()})};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* nav */
+function go(p){$$('.page').forEach(x=>x.classList.toggle('on',x.id==='p-'+p));$$('nav button').forEach(b=>b.classList.toggle('on',b.dataset.go===p));window.scrollTo(0,0)}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)go(b.dataset.go)});
+/* dark */
+const applyDark=()=>document.body.classList.toggle('dark',!!S.dark);applyDark();
+$('#darkBtn').onclick=()=>{S.dark=!S.dark;applyDark();save()};
+/* countdown */
+(function(){const now=new Date();let y=now.getFullYear();let x=new Date(y,11,25);if(now>new Date(y,11,26))x=new Date(y+1,11,25);const d=Math.ceil((x-now)/864e5);$('#countdown').textContent=d>0?d+' day'+(d===1?'':'s')+' until Christmas Day':(d===0?'It\'s Christmas Day – go gently ✦':'');})();
+
+/* SHOW */
+function show(big,small,bg,fg){const s=$('#show');s.style.background=bg||'#1f3d34';s.style.color=fg||'#fff';$('#showBig').textContent=big;$('#showSmall').textContent=small||'';s.classList.add('on');try{navigator.wakeLock&&navigator.wakeLock.request('screen').then(l=>s._l=l).catch(()=>{})}catch(e){}}
+function hide(){const s=$('#show');s.classList.remove('on');clearInterval(s._b);try{s._l&&s._l.release()}catch(e){}}
+$('#showClose').onclick=hide;
+
+/* BATTERY */
+const DR=[['Loud room / music',-15],['Long conversation',-10],['Being asked personal Qs',-12],['Lots of people arriving',-15],['Masking / being “on”',-12],['Plans changed suddenly',-15],['Smells, heat, scratchy clothes',-10],['Playing host',-12]];
+const PL=[['10 min alone',20],['Fresh air / walk',18],['Headphones on',12],['Stim / fidget break',10],['Snack + water',8],['Talked to my safe person',10]];
+function renderBatt(){const v=Math.max(0,Math.min(100,S.batt));$('#battNum').textContent=v+'%';const f=$('#battFill');f.style.width=v+'%';f.style.background=v>60?'#2f8a5f':v>35?'#d9a441':'#b23a48';
+ let t=v>70?'<b>Good charge.</b> Enjoy it, and still plan a break before you need one.':v>45?'<b>Half way.</b> Good time for a 10-minute reset before it drops further.':v>25?'<b>Running low.</b> Take a quiet break now, or use a break card if talking feels like effort.':'<b>Nearly empty.</b> This is exit-plan territory. Leaving early is a valid choice – you can open your exit plan.';
+ $('#battTip').innerHTML=t+(v<=25?' <button class="btn berry" style="margin-top:8px;width:100%" data-go="exit">Open exit plan</button>':'');
+ $('#battLog').innerHTML=S.log.length?S.log.slice(-12).reverse().map(l=>`${l.t} · ${esc(l.n)} <b style="color:${l.d<0?'var(--berry)':'var(--green2)'}">${l.d>0?'+':''}${l.d}</b>`).join('<br>'):'Nothing logged yet.'}
+function bump(n,d){S.batt=Math.max(0,Math.min(100,S.batt+d));const t=new Date();S.log.push({n,d,t:t.toTimeString().slice(0,5)});if(S.log.length>60)S.log.shift();save();renderBatt();toast((d>0?'+':'')+d+'%');if(navigator.vibrate)navigator.vibrate(30)}
+$('#drainBtns').innerHTML=DR.map((x,i)=>`<button data-d="${i}">${x[0]}<b>${x[1]}%</b></button>`).join('');
+$('#plusBtns').innerHTML=PL.map((x,i)=>`<button class="plus" data-p="${i}">${x[0]}<b>+${x[1]}%</b></button>`).join('');
+$('#drainBtns').onclick=e=>{const b=e.target.closest('button');if(b)bump(DR[b.dataset.d][0],DR[b.dataset.d][1])};
+$('#plusBtns').onclick=e=>{const b=e.target.closest('button');if(b)bump(PL[b.dataset.p][0],PL[b.dataset.p][1])};
+$('#battReset').onclick=()=>{S.batt=100;S.log=[];save();renderBatt();toast('Fresh start: 100%')};
+renderBatt();
+let chkT=null;$('#checkMins').onchange=e=>{clearInterval(chkT);const m=+e.target.value;if(!m){$('#checkNext').textContent='';return}
+ $('#checkNext').textContent='Next check-in in '+m+' minutes (keep this page open).';
+ chkT=setInterval(()=>{if(navigator.vibrate)navigator.vibrate([200,100,200]);show('Battery check 🔋','How full do you feel right now? Tap close, then log it.','#d9a441','#1d2a26')},m*60000)};
+
+/* BREAK CARDS */
+const BC=[['I’m taking a 10-minute quiet break.','I’m fine, nothing’s wrong. Back soon.','#1f3d34','#fff'],['It’s a bit loud for me right now.','Could we turn it down a little? Thank you.','#2f5a4c','#fff'],['I need a moment without talking.','I’m still enjoying being here.','#e3efe9','#1d2a26'],['Can we talk about this later?','I want to give it proper attention.','#f3ead9','#1d2a26'],['I’m heading off soon.','Thank you so much for having me.','#b23a48','#fff'],['Please don’t comment on my food.','I’m eating what works for me today.','#f6e1e3','#1d2a26'],['I’m overwhelmed, not upset.','Please give me some space and I’ll be back.','#1d2a26','#fff'],['Could you help me with this?','I’m stuck and asking is hard for me.','#d9a441','#1d2a26']];
+function renderCards(){const all=BC.concat(S.cards.map(c=>[c,'','#2f5a4c','#fff',1]));$('#breakList').innerHTML=all.map((c,i)=>`<button class="bc" data-i="${i}" style="background:${c[2]};color:${c[3]}">${esc(c[0])}${c[1]?`<div style="font-weight:500;font-size:14px;opacity:.85;margin-top:3px">${esc(c[1])}</div>`:''}${c[4]?`<div style="font-size:12px;opacity:.7;margin-top:4px">long-press / right-click to delete</div>`:''}</button>`).join('');
+ $$('#breakList .bc').forEach(b=>{const c=all[b.dataset.i];b.onclick=()=>show(c[0],c[1],c[2],c[3]);if(c[4])b.oncontextmenu=e=>{e.preventDefault();if(confirm('Delete this card?')){S.cards.splice(b.dataset.i-BC.length,1);save();renderCards()}}})}
+renderCards();
+$('#addCard').onclick=()=>{const v=$('#customCard').value.trim();if(!v)return;S.cards.push(v);$('#customCard').value='';save();renderCards();toast('Card saved')};
+$('#breathBtn').onclick=()=>{show('Breathe in…','4 seconds in · 6 seconds out','#2f5a4c','#fff');const s=$('#show');let n=0,phase=0;const step=()=>{phase=!phase;$('#showBig').textContent=phase?'Breathe in…':'…and out';};step();clearInterval(s._b);let t=0;s._b=setInterval(()=>{t++;if((phase&&t>=4)||(!phase&&t>=6)){t=0;step();n++}if(n>=24){clearInterval(s._b);$('#showBig').textContent='Well done ✦';$('#showSmall').textContent='Check your battery when you’re ready.'}},1000)};
+
+/* REPLIES */
+const Q={
+ 'When are you settling down?':[['Soft','Ha, no news to report! How’s your year been?'],['Firm','That’s not something I’m discussing today, but thanks for caring.'],['Switch','I’ll let you know if there’s news. Oh, did you ever finish that kitchen?']],
+ 'How’s work / job hunting?':[['Soft','It’s ticking along. I’m giving my brain a proper break from it this week.'],['Firm','I’d rather not talk work today. I’m trying to switch off.'],['Switch','Honestly, I’d rather hear about you. What’s been the best bit of your year?']],
+ 'Comments on food or weight':[['Soft','I’m happy with my plate, thanks!'],['Firm','Please don’t comment on my food or my body. Thanks.'],['Switch','Who made the roast potatoes? They’re brilliant.']],
+ 'When are you having kids?':[['Soft','Not on today’s agenda! Anyway…'],['Firm','That’s private, so I’ll leave it there.'],['Switch','Speaking of kids, how’s [cousin] getting on at school?']],
+ '“Everyone’s a bit ADHD”':[['Soft','It’s a bit different when it affects everything every day, but I appreciate you asking about it.'],['Firm','I’d rather not debate my diagnosis at Christmas.'],['Switch','Happy to chat another time. Shall we start the game?']],
+ 'Money / what did it cost?':[['Soft','Oh, I never remember prices! It was a bargain though.'],['Firm','I keep money stuff private, but thank you.'],['Switch','More importantly, do you like it?']],
+ 'Politics at the table':[['Soft','I think I’ll sit this one out and stick to the trifle.'],['Firm','Can we leave politics until after Christmas? I’d like a calm day.'],['Switch','Okay, new topic: best Christmas film. Go.']],
+ '“You look tired / quiet”':[['Soft','Just recharging! I’m enjoying it, honestly.'],['Firm','I’m fine, I just get tired in busy rooms. A bit of quiet helps.'],['Switch','I am a bit! Fancy a cuppa? I’ll make one.']],
+ '“Why are you leaving so early?”':[['Soft','I’ve had a lovely time. I just know my limits, and I want to leave on a high.'],['Firm','It’s what works for me. Thank you for having me.'],['Switch','Let’s do a walk on Boxing Day instead. I’d love that.']]
+};
+const CH=['Has anyone watched anything good lately?','What’s everyone’s best Christmas present ever?','Any plans for New Year?','Who wants a cuppa? I’m making some.','Shall we get a game going?','What’s the best thing that happened to you this year?'];
+let curQ=Object.keys(Q)[0];
+function renderQ(){$('#qChips').innerHTML=Object.keys(Q).map(k=>`<button class="chip${k===curQ?' on':''}" data-q="${esc(k)}">${esc(k)}</button>`).join('');
+ $('#qReplies').innerHTML=Q[curQ].map(r=>`<div class="reply" data-t="${esc(r[1])}"><small>${r[0]}</small>${esc(r[1])}</div>`).join('')+`<p class="note">Tap a reply to copy it. Say it out loud once before you go and it gets much easier.</p>`;}
+$('#qChips').onclick=e=>{const b=e.target.closest('.chip');if(b){curQ=b.dataset.q;renderQ()}};
+$('#qReplies').onclick=e=>{const r=e.target.closest('.reply');if(r)copy(r.dataset.t)};
+$('#changers').innerHTML=CH.map(c=>`<div class="reply" data-t="${esc(c)}"><small>Change topic</small>${esc(c)}</div>`).join('');
+$('#changers').onclick=e=>{const r=e.target.closest('.reply');if(r)copy(r.dataset.t)};
+renderQ();
+
+/* EXIT */
+const RS=['We’ve got an early start tomorrow','I need to get back for the dog','I want to beat the traffic / last train','I get tired in busy rooms and need a quiet evening','I promised myself a calm night in'];
+let exR=S.ex.r||RS[0];
+function renderEx(){$('#exReasons').innerHTML=RS.map(r=>`<button class="chip${r===exR?' on':''}">${esc(r)}</button>`).join('');}
+$('#exReasons').onclick=e=>{const b=e.target.closest('.chip');if(b){exR=b.textContent;renderEx()}};
+['exWhere','exArrive','exLeave','exSafe','exCode'].forEach(id=>{if(S.ex[id])$('#'+id).value=S.ex[id]});
+renderEx();
+function minus(t,m){const[h,mm]=t.split(':').map(Number);let x=h*60+mm-m;x=(x+1440)%1440;return String(Math.floor(x/60)).padStart(2,'0')+':'+String(x%60).padStart(2,'0')}
+$('#exMake').onclick=()=>{['exWhere','exArrive','exLeave','exSafe','exCode'].forEach(id=>S.ex[id]=$('#'+id).value);S.ex.r=exR;save();
+ const w=S.ex.exWhere||'the visit',L=S.ex.exLeave||'17:00',safe=S.ex.exSafe||'my safe person',code=S.ex.exCode||'pineapple';
+ const plan=`EXIT PLAN – ${w}\n\nArrive ${S.ex.exArrive||'?'}  ·  Leave by ${L}\n\n${minus(L,60)}  Mention it early: “Just so you know, I’ll head off around ${L}.”\n${minus(L,20)}  Start the goodbye. Collect coat, bag, gifts, leftovers.\n${L}  Leave. Kind and short: “${exR}. Thank you so much – it’s been lovely.”\n\nIf I need to go sooner: I text ${safe} the word “${code}”.\nWe leave within 10 minutes. No explaining needed.\n\nRemember: leaving on time is not rude. It’s how you make sure you can come back next year.`;
+ $('#exOut').innerHTML=`<div class="card"><div class="out">${esc(plan)}</div><div class="row" style="margin-top:10px"><button class="btn" id="exCopy">Copy plan</button><button class="btn alt" id="exText">Text for ${esc(safe)}</button></div></div>`;
+ $('#exCopy').onclick=()=>copy(plan);
+ $('#exText').onclick=()=>copy(`Hi! For ${w}: I'm planning to leave by ${L}. If I text you "${code}" it means I need to go now – can you help me leave without a fuss? Thank you ❤`);};
+
+/* PLAN */
+const COST=[['Easy',1],['Medium',2],['Big',3],['Recovery',-2]];
+const TPL=[['08:30','Wake up slowly, no phone yet',1],['09:30','Stockings / opening presents',2],['10:30','Quiet break before cooking',-2],['11:00','Cooking or arriving at family',3],['13:30','Christmas dinner',3],['15:00','The King’s Christmas message / film',1],['15:45','Walk or fresh air',-2],['16:30','Games / visitors',3],['18:30','Quiet time with headphones',-2],['20:00','Leftovers + cosy film',1]];
+let pc=2;
+function renderPlan(){if(!S.plan)S.plan=TPL.map(x=>({t:x[0],n:x[1],c:x[2]}));S.plan.sort((a,b)=>a.t.localeCompare(b.t));
+ const B=+S.budget;$('#budget').value=B;const used=S.plan.reduce((a,b)=>a+b.c,0);const pct=Math.min(100,Math.max(0,used/B*100));
+ $('#planBar').style.width=pct+'%';$('#planBar').style.background=used>B?'#b23a48':used>B*.8?'#d9a441':'#2f8a5f';
+ $('#planSum').innerHTML=used>B?`<b style="color:var(--berry)">${used} of ${B} points: over budget.</b> Swap something for a recovery break, shorten a visit, or move it to Boxing Day.`:`<b>${used} of ${B} points used.</b> ${B-used} spare for surprises (there are always surprises).`;
+ $('#planList').innerHTML=S.plan.map((p,i)=>`<li><span class="t">${esc(p.t)}</span><span class="n">${esc(p.n)}</span><span class="cost c-${p.c}">${p.c>0?'−'+p.c:'+'+(-p.c)}</span><button class="x" data-i="${i}" aria-label="remove">×</button></li>`).join('');}
+$('#pCost').innerHTML=COST.map(c=>`<button class="chip${c[1]===pc?' on':''}" data-c="${c[1]}">${c[0]} (${c[1]>0?'−'+c[1]:'+2'})</button>`).join('');
+$('#pCost').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;pc=+b.dataset.c;$$('#pCost .chip').forEach(x=>x.classList.toggle('on',x===b))};
+$('#pAdd').onclick=()=>{const n=$('#pName').value.trim();if(!n)return;S.plan.push({t:$('#pTime').value||'12:00',n,c:pc});$('#pName').value='';save();renderPlan()};
+$('#planList').onclick=e=>{const b=e.target.closest('.x');if(b){S.plan.splice(+b.dataset.i,1);save();renderPlan()}};
+$('#pTemplate').onclick=()=>{if(confirm('Replace your plan with the UK Christmas Day template?')){S.plan=null;save();renderPlan()}};
+$('#budget').onchange=e=>{S.budget=+e.target.value;save();renderPlan()};
+renderPlan();
+
+/* GIFTS */
+const WHO=['Partner','Parent','Sibling','Friend','Colleague / Secret Santa','Child','Teenager','Grandparent'];
+const LIKE=['Food & drink','Cosy / comfort','Reading','Gaming','Outdoors','Music','Crafts & making','Sport / fitness','Home & plants','Beauty / pampering','Tech','No idea!'];
+const BUD=['Under £10','£10–£25','£25–£50','£50+'];
+const IDEAS={'Food & drink':['Local deli hamper you build yourself','Fancy hot chocolate + mug','Experience: cookery class or tasting'],'Cosy / comfort':['Weighted or extra-soft blanket','Good slippers or bed socks','Hot water bottle + candle'],'Reading':['Book-shop gift card + bookmark','Book from their favourite author’s backlist','Reading light'],'Gaming':['Game-store gift card','Controller charging stand','Board/card game for two'],'Outdoors':['Thermos flask','National Trust or local garden day out','Head torch or hand warmers'],'Music':['Gig or concert voucher','Vinyl from their favourite artist','Wireless earbuds case/accessories'],'Crafts & making':['Beginner kit (embroidery, candle, lino)','Craft-shop gift card','Nice notebook + pens'],'Sport / fitness':['Match or event tickets','Water bottle + snacks bundle','Massage ball / recovery kit'],'Home & plants':['Easy houseplant + pot','Coffee-table book','Nice-smelling hand wash duo'],'Beauty / pampering':['Bath and body set','Silk pillowcase','Spa or nail voucher'],'Tech':['Power bank','Phone stand / cable tidy','Smart plug or bulb'],'No idea!':['A nice consumable they’ll use up (food, candle, coffee)','Gift card + handwritten card','Experience together: cinema, walk & pub lunch']};
+let G={};
+const chipsFor=(el,arr,multi)=>{$(el).innerHTML=arr.map(a=>`<button class="chip">${esc(a)}</button>`).join('')};
+chipsFor('#gWho',WHO);chipsFor('#gLike',LIKE);chipsFor('#gBud',BUD);
+const step=n=>$$('.step').forEach(s=>s.classList.toggle('on',+s.dataset.s===n));
+$('#gWho').onclick=e=>{const b=e.target.closest('.chip');if(b){G={who:b.textContent,likes:[]};$$('#gLike .chip').forEach(c=>c.classList.remove('on'));step(2)}};
+$('#gLike').onclick=e=>{const b=e.target.closest('.chip');if(b){b.classList.toggle('on')}};
+$('#g2').onclick=()=>{G.likes=$$('#gLike .chip.on').map(c=>c.textContent);if(!G.likes.length)G.likes=['No idea!'];step(3)};
+$('#gBud').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;G.bud=b.textContent;
+ let ideas=[];G.likes.forEach(l=>ideas.push(...IDEAS[l]));ideas=[...new Set(ideas)].slice(0,6);
+ $('#gOut').innerHTML=`<b>Shortlist for your ${esc(G.who.toLowerCase())} (${esc(G.bud)})</b>${ideas.map(i=>`<div class="reply" data-t="${esc(i)}"><small>Idea</small>${esc(i)}</div>`).join('')}<div class="tip"><b>The good-enough rule:</b> pick the first one that made you think “oh, they’d like that”. Set a 10-minute timer to buy it. A thoughtful card matters more than the perfect gift.</div><button class="btn full" style="margin-top:10px" id="gSave">Add first idea to my list</button>`;
+ $('#gSave').onclick=()=>{S.gifts.push({n:G.who,i:ideas[0],s:0});save();renderGifts();toast('Added to list')};step(4)};
+$('#gAgain').onclick=()=>step(1);
+function renderGifts(){$('#giftList').innerHTML=S.gifts.length?S.gifts.map((g,i)=>`<div class="check"><button class="cost ${g.s===2?'c--2':g.s===1?'c-2':'c-3'}" style="border:0;cursor:pointer" data-s="${i}">${['To buy','Bought','Wrapped ✓'][g.s]}</button><span style="flex:1"><b>${esc(g.n)}</b> – ${esc(g.i||'')}</span><button class="x" data-d="${i}">×</button></div>`).join(''):'<p class="note">No one yet.</p>';}
+$('#giftList').onclick=e=>{const s=e.target.closest('[data-s]'),d=e.target.closest('[data-d]');if(s){const g=S.gifts[s.dataset.s];g.s=(g.s+1)%3}if(d)S.gifts.splice(d.dataset.d,1);save();renderGifts()};
+$('#giftAdd').onclick=()=>{const n=$('#giftName').value.trim();if(!n)return;S.gifts.push({n,i:$('#giftIdea').value.trim(),s:0});$('#giftName').value=$('#giftIdea').value='';save();renderGifts()};
+renderGifts();
+
+/* ME */
+const HELP=['A quiet room I can go to','Warning before plans change','Knowing the plan for the day','Headphones are OK','Not being asked lots of questions','Being allowed to leave early','Doing a job (washing up!)','Dimmer lights','Plain food options','Text instead of calls'];
+const DRAIN=['Loud music + talking at once','Surprise visitors','Being hugged without asking','Strong smells / candles','Long sit-down meals','Being the centre of attention','Last-minute changes','Crowded shops','Party games put on the spot','Being told I “seem fine”'];
+function renderMe(){$('#meHelp').innerHTML=HELP.map(h=>`<button class="chip${S.me.help.includes(h)?' on':''}">${esc(h)}</button>`).join('');$('#meDrain').innerHTML=DRAIN.map(h=>`<button class="chip${S.me.drain.includes(h)?' on':''}">${esc(h)}</button>`).join('');$('#meName').value=S.me.name||'';$('#meNote').value=S.me.note||''}
+const tog=(arr,v)=>{const i=arr.indexOf(v);i>-1?arr.splice(i,1):arr.push(v)};
+$('#meHelp').onclick=e=>{const b=e.target.closest('.chip');if(b){tog(S.me.help,b.textContent);b.classList.toggle('on');save()}};
+$('#meDrain').onclick=e=>{const b=e.target.closest('.chip');if(b){tog(S.me.drain,b.textContent);b.classList.toggle('on');save()}};
+$('#meName').oninput=e=>{S.me.name=e.target.value;save()};$('#meNote').oninput=e=>{S.me.note=e.target.value;save()};
+const meText=()=>`Hi! A few things that help ${S.me.name||'me'} enjoy Christmas:\n\nWhat helps:\n${S.me.help.map(h=>'• '+h).join('\n')||'• (not filled in)'}\n\nWhat drains me fast:\n${S.me.drain.map(h=>'• '+h).join('\n')||'• (not filled in)'}\n\n${S.me.note||'If I go quiet or step out, I’m not upset – I’m recharging.'}\n\nThank you for understanding ❤`;
+$('#meShow').onclick=()=>show((S.me.name?S.me.name+'’s':'My')+' Christmas needs','Helps: '+(S.me.help.join(' · ')||'—')+'\n\nDrains: '+(S.me.drain.join(' · ')||'—'),'#f3ead9','#1d2a26');
+$('#meCopy').onclick=()=>copy(meText());
+renderMe();
+
+/* RESET */
+const RSET=['Drink a glass of water','Open the curtains / a window','Put on clean, comfy clothes','One bin bag: wrapping paper only','Put gifts in one box per person','Fridge check: eat, freeze or bin leftovers','Run one load of washing','Write a thank-you text to one person','10-minute tidy with a timer, then stop','Put Christmas cards in one pile','Plan one easy meal for tomorrow','Go outside for 10 minutes','Take the decorations down (or decide a date)','Reset your normal sleep time tonight','Do absolutely nothing for an hour – it counts'];
+function renderReset(){$('#resetList').innerHTML=RSET.map((r,i)=>`<label class="check${S.reset.includes(i)?' done':''}" style="font-weight:400;margin:0"><input type="checkbox" data-i="${i}" ${S.reset.includes(i)?'checked':''}><span>${esc(r)}</span></label>`).join('');$('#resetBar').style.width=(S.reset.length/RSET.length*100)+'%'}
+$('#resetList').onchange=e=>{const i=+e.target.dataset.i;tog(S.reset,i);save();renderReset();if(S.reset.includes(i))toast('Nice. That counts ✦')};
+$('#resetClear').onclick=()=>{S.reset=[];save();renderReset()};
+renderReset();
+})();
+</script>
+<script>if('serviceWorker' in navigator&&location.protocol==='https:'){navigator.serviceWorker.register('sw.js').catch(function(){})}</script>
+</body>
+</html>
