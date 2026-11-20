@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1f3a5f">
+<title>FREE DEMO · Economics Diagram Trainer</title><meta name="robots" content="noindex">
+<style>
+:root{--ink:#1d2433;--muted:#5d6678;--bg:#f6f4ef;--card:#fff;--line:#e3e0d8;--navy:#1f3a5f;--d:#2563eb;--s:#c2410c;--soc:#7c3aed;--good:#15803d;--goodbg:#e7f6ec;--bad:#b42318;--badbg:#fdecea;--gold:#b7791f;--shadeA:rgba(37,99,235,.18);--shadeB:rgba(194,65,12,.18);--shadeC:rgba(124,58,237,.25);--r:14px}
+body.dark{--ink:#e8ebf2;--muted:#a5adbd;--bg:#141821;--card:#1d2330;--line:#2e3647;--navy:#9cc0ef;--d:#60a5fa;--s:#fb923c;--soc:#c4b5fd;--goodbg:#173323;--badbg:#3a1d1c;--good:#4ade80;--bad:#f87171}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--bg);-webkit-text-size-adjust:100%}
+header{background:var(--navy);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:5}
+body.dark header{background:#0f1726;color:var(--ink)}
+header h1{font-size:17px;margin:0;flex:1;line-height:1.2}
+header small{display:block;font-weight:400;opacity:.8;font-size:12px}
+header button{background:rgba(255,255,255,.14);color:inherit;border:0;border-radius:10px;padding:8px 10px;font:inherit;font-size:14px;cursor:pointer}
+main{max-width:760px;margin:0 auto;padding:16px 14px 90px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin:0 0 14px}
+h2{font-size:20px;margin:4px 0 10px}
+h3{font-size:16px;margin:14px 0 6px}
+p{margin:6px 0}
+.muted{color:var(--muted);font-size:14px}
+.grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+.btn{display:inline-block;border:0;border-radius:12px;padding:12px 16px;font:inherit;font-weight:600;cursor:pointer;background:var(--navy);color:#fff;text-align:center}
+body.dark .btn{color:#0f1726}body.dark .btn.ghost{color:var(--navy)}
+.btn.ghost{background:transparent;color:var(--navy);border:1.5px solid var(--navy)}
+.btn.block{display:block;width:100%}
+.mode{text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:var(--r);padding:14px;cursor:pointer;font:inherit;color:inherit}
+.mode:hover,.topic:hover{border-color:var(--navy)}
+.mode b{display:block;font-size:17px;margin-bottom:2px}
+.topic{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;margin:0 0 8px;font:inherit;color:inherit;cursor:pointer}
+.topic small{color:var(--muted);display:block}
+.pill{font-size:12px;font-weight:700;border-radius:99px;padding:3px 9px;background:var(--line);color:var(--muted);white-space:nowrap}
+.pill.done{background:var(--goodbg);color:var(--good)}
+.bar{height:8px;border-radius:9px;background:var(--line);overflow:hidden;margin:8px 0}
+.bar i{display:block;height:100%;background:var(--good);width:0;transition:width .4s}
+.ctx{font-size:17px;font-weight:600}
+.stepq{font-weight:700;margin:14px 0 8px}
+.opts{display:grid;gap:8px;grid-template-columns:1fr 1fr}
+.opts.one{grid-template-columns:1fr}
+.opt{border:1.5px solid var(--line);background:var(--card);color:inherit;border-radius:12px;padding:12px;font:inherit;cursor:pointer;text-align:left;min-height:48px}
+.opt:hover{border-color:var(--navy)}
+.opt.right{border-color:var(--good);background:var(--goodbg)}
+.opt.wrong{border-color:var(--bad);background:var(--badbg);opacity:.8}
+.opt[disabled]{cursor:default}
+.fb{border-radius:12px;padding:10px 12px;margin:10px 0;font-size:15px}
+.fb.ok{background:var(--goodbg)}
+.fb.no{background:var(--badbg)}
+.done-steps{font-size:14px;color:var(--muted);margin:6px 0}
+.done-steps div::before{content:"✓ ";color:var(--good);font-weight:700}
+svg.dg{width:100%;max-width:500px;display:block;margin:6px auto;background:var(--card)}
+svg.dg text{font:600 14px system-ui,sans-serif;fill:var(--ink)}
+svg.dg .ax{stroke:var(--ink);stroke-width:2;fill:none}
+svg.dg .dash{stroke:var(--muted);stroke-width:1.2;stroke-dasharray:4 4}
+ol.chain{padding-left:22px;margin:6px 0}
+ol.chain li{margin:4px 0}
+.tip{border-left:4px solid var(--gold);padding:8px 12px;background:rgba(183,121,31,.08);border-radius:0 10px 10px 0;margin:10px 0}
+.eval{border-left:4px solid var(--soc);padding:8px 12px;background:rgba(124,58,237,.08);border-radius:0 10px 10px 0;margin:10px 0}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.row>.btn{flex:1}
+.check li{margin:3px 0}
+footer{font-size:12px;color:var(--muted);text-align:center;padding:10px 14px 30px}
+.score{font-size:42px;font-weight:800;text-align:center;margin:6px 0}
+.hide{display:none!important}
+.legend{font-size:13px;color:var(--muted);text-align:center}
+@media (max-width:420px){.opts{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{header,footer,.noprint{display:none!important}.card{break-inside:avoid;border:1px solid #999}body{background:#fff}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Economics Diagram Trainer<small>A-level Theme 1 · Edexcel A</small></h1>
+  <button id="homeBtn" class="noprint" aria-label="Home">Home</button>
+  <button id="darkBtn" class="noprint" aria-label="Dark mode">Dark</button>
+</header>
+<div style="background:#b7791f;color:#fff;font:600 14px/1.4 system-ui;padding:10px 12px;text-align:center">FREE DEMO: 3 of the 20 diagrams. <a href="https://www.etsy.com/uk/shop/VectorDigitalPlus" target="_blank" rel="noopener" style="color:#fff;text-decoration:underline">Get the full Theme 1 trainer on Etsy</a></div>
+<main id="app"></main>
+<footer>Made by an A-level Economics teacher · VectorDigitalPlus · Works offline once opened.<br>Independent revision tool; not produced or endorsed by Pearson Edexcel.</footer>
+
+<script>
+"use strict";
+/* ---------- storage (safe) ---------- */
+const KEY="vdp_econ_t1_demo";
+let store={done:{},best:0,dark:false};
+try{const r=localStorage.getItem(KEY);if(r)store=Object.assign(store,JSON.parse(r));}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(store));}catch(e){}}
+if(store.dark)document.body.classList.add("dark");
+
+/* ---------- diagram engine ----------
+   Domain: Q 0..10 (x), P 0..10 (y). Lines are P = m*Q + c.               */
+const W=500,H=360,L=56,R=86,T=18,B=48,PW=W-L-R,PH=H-T-B;
+const X=q=>L+q/10*PW, Y=p=>T+(1-p/10)*PH;
+const NS="http://www.w3.org/2000/svg";
+const col=k=>getComputedStyle(document.body).getPropertyValue(k).trim();
+function el(tag,attrs,txt){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(txt!=null)e.textContent=txt;return e;}
+function inter(a,b){const q=(b.c-a.c)/(a.m-b.m);return{q,p:a.m*q+a.c};}
+function lineSeg(ln,qmin=.4,qmax=9.6){ // clip to box 0.2..9.8 in P
+  let pts=[];for(const q of [qmin,qmax])pts.push({q,p:ln.m*q+ln.c});
+  // clip by P
+  const clip=(pt,other)=>{if(pt.p>9.7){const q=(9.7-ln.c)/ln.m;return{q,p:9.7}}if(pt.p<.3){const q=(.3-ln.c)/ln.m;return{q,p:.3}}return pt;};
+  return [clip(pts[0]),clip(pts[1])];
+}
+function drawAxes(svg,xl="Quantity",yl="Price",orig=true){
+  svg.appendChild(el("path",{d:`M${L},${T} V${T+PH} H${L+PW}`,class:"ax"}));
+  svg.appendChild(el("text",{x:L-8,y:T+4,"text-anchor":"end"},yl==="Price"?"P":""));
+  svg.appendChild(el("text",{x:L+PW,y:T+PH+36,"text-anchor":"end"},xl));
+  const t=el("text",{x:14,y:T+PH/2,"text-anchor":"middle",transform:`rotate(-90 14 ${T+PH/2})`},yl);svg.appendChild(t);
+  if(orig)svg.appendChild(el("text",{x:L-6,y:T+PH+16,"text-anchor":"end"},"O"));
+}
+function drawLine(svg,ln){
+  const [a,b]=lineSeg(ln,ln.q0??.4,ln.q1??9.6);
+  const g=el("g",{});
+  const path=el("line",{x1:X(a.q),y1:Y(a.p),x2:X(b.q),y2:Y(b.p),stroke:col(ln.col||"--d"),"stroke-width":3,"stroke-linecap":"round"});
+  if(ln.dash)path.setAttribute("stroke-dasharray","8 6");
+  g.appendChild(path);
+  const end=(ln.m<0)?b:(a.p>b.p?a:b);
+  const lab=el("text",{x:X(end.q)+6,y:Y(end.p)+(ln.m<0?-4:4),fill:col(ln.col||"--d")},ln.label);
+  lab.style.fill=col(ln.col||"--d");
+  g.appendChild(lab);svg.appendChild(g);return g;
+}
+function drawPoint(svg,pt,lp,lq,dashed=true){
+  if(dashed){
+    svg.appendChild(el("line",{x1:L,y1:Y(pt.p),x2:X(pt.q),y2:Y(pt.p),class:"dash"}));
+    svg.appendChild(el("line",{x1:X(pt.q),y1:Y(pt.p),x2:X(pt.q),y2:T+PH,class:"dash"}));
+  }
+  svg.appendChild(el("circle",{cx:X(pt.q),cy:Y(pt.p),r:4,fill:col("--ink")}));
+  if(lp)svg.appendChild(el("text",{x:L-6,y:Y(pt.p)+4,"text-anchor":"end"},lp));
+  if(lq)svg.appendChild(el("text",{x:X(pt.q),y:T+PH+18,"text-anchor":"middle"},lq));
+}
+function poly(svg,pts,fill){svg.appendChild(el("polygon",{points:pts.map(p=>X(p.q)+","+Y(p.p)).join(" "),fill:col(fill),stroke:"none"}));}
+function hline(svg,p,label,color="--gold",q1=9.4){
+  svg.appendChild(el("line",{x1:L,y1:Y(p),x2:X(q1),y2:Y(p),stroke:col(color),"stroke-width":2.5}));
+  const t=el("text",{x:X(q1)+4,y:Y(p)+4},label);t.style.fill=col(color);svg.appendChild(t);
+}
+function arrow(svg,from,to,color="--ink"){
+  const c=col(color),id="ah"+Math.random().toString(36).slice(2,7);
+  const m=el("marker",{id,viewBox:"0 0 10 10",refX:8,refY:5,markerWidth:7,markerHeight:7,orient:"auto-start-reverse"});
+  m.appendChild(el("path",{d:"M0,0 L10,5 L0,10 z",fill:c}));const d=el("defs",{});d.appendChild(m);svg.appendChild(d);
+  svg.appendChild(el("line",{x1:X(from.q),y1:Y(from.p),x2:X(to.q),y2:Y(to.p),stroke:c,"stroke-width":2,"marker-end":`url(#${id})`}));
+}
+function bracket(svg,qa,qb,p,label){
+  const y=Y(p)+14;
+  svg.appendChild(el("path",{d:`M${X(qa)},${y-5} V${y} H${X(qb)} V${y-5}`,stroke:col("--bad"),fill:"none","stroke-width":2}));
+  const t=el("text",{x:(X(qa)+X(qb))/2,y:y+15,"text-anchor":"middle"},label);t.style.fill=col("--bad");svg.appendChild(t);
+}
+function newSvg(){return el("svg",{viewBox:`0 0 ${W} ${H}`,class:"dg",role:"img"});}
+
+/* Diagram builders. stage 0 = before (starting position), 1 = after (full answer). t = animation 0..1 */
+const D0={m:-1,c:10,label:"D1",col:"--d"}, S0={m:1,c:0,label:"S1",col:"--s"};
+const lerp=(a,b,t)=>a+(b-a)*t;
+const DG={
+  shift(o,stage,t){ // o:{curve:'D'|'S',dir:1|-1, dm, sm}
+    const svg=newSvg();drawAxes(svg);
+    const D={...D0,m:o.dm??-1,c:o.dc??10},S={...S0,m:o.sm??1,c:o.sc??0};
+    const e1=inter(D,S);
+    if(stage===0){drawLine(svg,D);drawLine(svg,S);drawPoint(svg,e1,"P1","Q1");svg.setAttribute("aria-label","Demand and supply diagram at equilibrium P1 Q1");return svg;}
+    const k=o.k??2.2;
+    let D2={...D},S2={...S};
+    if(o.curve==="D"){D2={...D,c:D.c+(-D.m)*k*o.dir*t,label:"D2",dash:true};}
+    else{S2={...S,c:S.c-S.m*k*o.dir*t,label:"S2",dash:true};}
+    drawLine(svg,D);drawLine(svg,S);
+    const moving=o.curve==="D"?D2:S2;drawLine(svg,moving);
+    const e2=inter(D2,S2);
+    drawPoint(svg,e1,"P1","Q1");
+    if(t>.98)drawPoint(svg,e2,"P2","Q2");
+    // arrow showing shift at a mid-height
+    const base=o.curve==="D"?D:S,p=o.curve==="D"?7.6:7.8;const qa=(p-base.c)/base.m,qb=(p-moving.c)/moving.m;
+    if(Math.abs(qb-qa)>.3)arrow(svg,{q:qa+(qb>qa?.2:-.2),p},{q:qb-(qb>qa?.25:-.25),p});
+    svg.setAttribute("aria-label",`${o.curve==="D"?"Demand":"Supply"} shifts ${o.dir>0?"right":"left"}; new equilibrium P2 Q2`);
+    return svg;
+  },
+  elasticity(o,stage,t){ // two panels? use one: steep vs flat demand, supply shift left
+    const svg=newSvg();drawAxes(svg);
+    const D={m:o.steep?-3:-.45,c:o.steep?20:7.25,label:o.steep?"D (inelastic)":"D (elastic)",col:"--d"};
+    const S={...S0};const e1=inter(D,S);
+    drawLine(svg,D);drawLine(svg,S);drawPoint(svg,e1,"P1","Q1");
+    if(stage===0)return svg;
+    const S2={...S,c:S.c+2.2*t,label:"S2",dash:true};drawLine(svg,S2);
+    if(t>.98)drawPoint(svg,inter(D,S2),"P2","Q2");
+    return svg;
+  },
+  tax(o,stage,t){ // inelastic demand, specific tax
+    const svg=newSvg();drawAxes(svg);
+    const D={m:-1.4,c:12.2,label:"D",col:"--d"},S={...S0};const tax=2.6;
+    const e1=inter(D,S);
+    if(stage===0){drawLine(svg,D);drawLine(svg,S);drawPoint(svg,e1,"P1","Q1");return svg;}
+    const S2={...S,c:tax*t,label:"S + tax",dash:true};
+    const e2=inter(D,S2),pp=e2.p-tax*t;
+    if(t>.98){
+      poly(svg,[{q:0,p:e2.p},{q:e2.q,p:e2.p},{q:e2.q,p:e1.p},{q:0,p:e1.p}],"--shadeA");
+      poly(svg,[{q:0,p:e1.p},{q:e2.q,p:e1.p},{q:e2.q,p:pp},{q:0,p:pp}],"--shadeB");
+    }
+    drawLine(svg,D);drawLine(svg,S);drawLine(svg,S2);
+    drawPoint(svg,e1,"P1","Q1");
+    if(t>.98){drawPoint(svg,e2,"P2","Q2");
+      svg.appendChild(el("line",{x1:L,y1:Y(pp),x2:X(e2.q),y2:Y(pp),class:"dash"}));
+      svg.appendChild(el("text",{x:L-6,y:Y(pp)+4,"text-anchor":"end"},"P3"));
+      const a=el("text",{x:X(e2.q/2),y:Y((e2.p+e1.p)/2)+4,"text-anchor":"middle"},"Consumers");svg.appendChild(a);
+      const b=el("text",{x:X(e2.q/2),y:Y((e1.p+pp)/2)+4,"text-anchor":"middle"},"Producers");svg.appendChild(b);}
+    return svg;
+  },
+  subsidy(o,stage,t){
+    const svg=newSvg();drawAxes(svg);
+    const D={...D0,label:"D"},S={...S0,c:1.2};const sub=2.4;const e1=inter(D,S);
+    if(stage===0){drawLine(svg,D);drawLine(svg,S);drawPoint(svg,e1,"P1","Q1");return svg;}
+    const S2={...S,c:S.c-sub*t,label:"S + subsidy",dash:true};const e2=inter(D,S2);
+    if(t>.98)poly(svg,[{q:0,p:e2.p+sub},{q:e2.q,p:e2.p+sub},{q:e2.q,p:e2.p},{q:0,p:e2.p}],"--shadeC");
+    drawLine(svg,D);drawLine(svg,S);drawLine(svg,S2);drawPoint(svg,e1,"P1","Q1");
+    if(t>.98){drawPoint(svg,e2,"P2","Q2");
+      svg.appendChild(el("line",{x1:L,y1:Y(e2.p+sub),x2:X(e2.q),y2:Y(e2.p+sub),class:"dash"}));
+      svg.appendChild(el("text",{x:L-6,y:Y(e2.p+sub)+4,"text-anchor":"end"},"P3"));
+      svg.appendChild(el("text",{x:X(e2.q/2),y:Y(e2.p+sub/2)+4,"text-anchor":"middle"},"Cost to govt"));}
+    return svg;
+  },
+  maxp(o,stage,t){
+    const svg=newSvg();drawAxes(svg);const D={...D0,label:"D"},S={...S0,label:"S"};const e=inter(D,S);
+    drawLine(svg,D);drawLine(svg,S);drawPoint(svg,e,"Pe","Qe");
+    if(stage===0)return svg;
+    const pm=lerp(e.p,3.2,t);hline(svg,pm,"Max price");
+    if(t>.98){const qs=(pm-S.c)/S.m,qd=(pm-D.c)/D.m;
+      svg.appendChild(el("line",{x1:X(qs),y1:Y(pm),x2:X(qs),y2:T+PH,class:"dash"}));svg.appendChild(el("text",{x:X(qs),y:T+PH+18,"text-anchor":"middle"},"Qs"));
+      svg.appendChild(el("line",{x1:X(qd),y1:Y(pm),x2:X(qd),y2:T+PH,class:"dash"}));svg.appendChild(el("text",{x:X(qd),y:T+PH+18,"text-anchor":"middle"},"Qd"));
+      bracket(svg,qs,qd,pm,"Shortage");}
+    return svg;
+  },
+  minp(o,stage,t){
+    const svg=newSvg();drawAxes(svg);const D={...D0,label:"D"},S={...S0,label:"S"};const e=inter(D,S);
+    drawLine(svg,D);drawLine(svg,S);drawPoint(svg,e,"Pe","Qe");
+    if(stage===0)return svg;
+    const pm=lerp(e.p,6.8,t);hline(svg,pm,"Min price");
+    if(t>.98){const qs=(pm-S.c)/S.m,qd=(pm-D.c)/D.m;
+      svg.appendChild(el("line",{x1:X(qd),y1:Y(pm),x2:X(qd),y2:T+PH,class:"dash"}));svg.appendChild(el("text",{x:X(qd),y:T+PH+18,"text-anchor":"middle"},"Qd"));
+      svg.appendChild(el("line",{x1:X(qs),y1:Y(pm),x2:X(qs),y2:T+PH,class:"dash"}));svg.appendChild(el("text",{x:X(qs),y:T+PH+18,"text-anchor":"middle"},"Qs"));
+      const y=Y(pm)-12;svg.appendChild(el("path",{d:`M${X(qd)},${y+5} V${y} H${X(qs)} V${y+5}`,stroke:col("--bad"),fill:"none","stroke-width":2}));
+      const tx=el("text",{x:(X(qd)+X(qs))/2,y:y-6,"text-anchor":"middle"},"Surplus");tx.style.fill=col("--bad");svg.appendChild(tx);}
+    return svg;
+  },
+  negext(o,stage,t){
+    const svg=newSvg();drawAxes(svg,"Quantity","Costs, benefits");
+    const D={m:-1,c:10,label:"MPB = MSB",col:"--d"},S={m:1,c:0,label:"MPC",col:"--s"};
+    const e1=inter(D,S);drawLine(svg,D);drawLine(svg,S);drawPoint(svg,e1,"P1","Q1");
+    if(stage===0)return svg;
+    const MSC={m:1,c:2.6*t,label:"MSC",col:"--soc",dash:true};const so=inter(D,MSC);
+    if(t>.98)poly(svg,[so,{q:e1.q,p:MSC.m*e1.q+MSC.c},e1],"--shadeC");
+    drawLine(svg,MSC);
+    if(t>.98){drawPoint(svg,so,"P*","Q*");svg.appendChild(el("text",{x:X(e1.q)+8,y:Y(e1.p+1.3)},"Welfare loss"));}
+    return svg;
+  },
+  posext(o,stage,t){
+    const svg=newSvg();drawAxes(svg,"Quantity","Costs, benefits");
+    const D={m:-1,c:10,label:"MPB",col:"--d"},S={m:1,c:0,label:"MPC = MSC",col:"--s"};
+    const e1=inter(D,S);drawLine(svg,D);drawLine(svg,S);drawPoint(svg,e1,"P1","Q1");
+    if(stage===0)return svg;
+    const MSB={m:-1,c:10+2.6*t,label:"MSB",col:"--soc",dash:true};const so=inter(MSB,S);
+    if(t>.98)poly(svg,[{q:e1.q,p:MSB.m*e1.q+MSB.c},so,e1],"--shadeC");
+    drawLine(svg,MSB);
+    if(t>.98){drawPoint(svg,so,"P*","Q*");svg.appendChild(el("text",{x:X(so.q)+10,y:Y(so.p)+24},"Welfare loss"));}
+    return svg;
+  },
+  surplus(o,stage,t){
+    const svg=newSvg();drawAxes(svg);const D={...D0,label:"D"},S={...S0,label:"S1"};const e1=inter(D,S);
+    if(stage===0){
+      poly(svg,[{q:0,p:10},{q:0,p:e1.p},e1],"--shadeA");poly(svg,[{q:0,p:e1.p},{q:0,p:0},e1],"--shadeB");
+      drawLine(svg,D);drawLine(svg,S);drawPoint(svg,e1,"P1","Q1");
+      svg.appendChild(el("text",{x:X(1.4),y:Y(7)},"CS"));svg.appendChild(el("text",{x:X(1.4),y:Y(3.2)},"PS"));return svg;}
+    const S2={...S,c:2.4*t,label:"S2",dash:true};const e2=inter(D,S2);
+    if(t>.98)poly(svg,[{q:0,p:10},{q:0,p:e2.p},e2],"--shadeA");
+    drawLine(svg,D);drawLine(svg,S);drawLine(svg,S2);drawPoint(svg,e1,"P1","Q1");
+    if(t>.98){drawPoint(svg,e2,"P2","Q2");svg.appendChild(el("text",{x:X(1.1),y:Y(7.8)},"New CS"));}
+    return svg;
+  },
+  ppf(o,stage,t){
+    const svg=newSvg();drawAxes(svg,"Consumer goods","Capital goods");
+    const arc=(r,c,dash,label)=>{let d="";for(let i=0;i<=40;i++){const a=i/40*Math.PI/2;d+=(i?"L":"M")+X(r*Math.cos(a))+","+Y(r*Math.sin(a));}
+      const p=el("path",{d,fill:"none",stroke:col(c),"stroke-width":3});if(dash)p.setAttribute("stroke-dasharray","8 6");svg.appendChild(p);
+      const tx=el("text",{x:X(r*Math.cos(.5))+6,y:Y(r*Math.sin(.5))},label);tx.style.fill=col(c);svg.appendChild(tx);};
+    arc(6.5,"--d",false,"PPF1");
+    if(o.kind==="shift"){
+      if(stage===0)return svg;
+      const r=lerp(6.5,8.6,t);arc(r,"--s",true,"PPF2");
+      if(t>.98)arrow(svg,{q:6.5*Math.cos(.8)+.15,p:6.5*Math.sin(.8)+.15},{q:8.6*Math.cos(.8)-.2,p:8.6*Math.sin(.8)-.2});
+      return svg;
+    }
+    // points: A, B on curve, C inside, D outside
+    const pt=(a,r,lab)=>{const q=r*Math.cos(a),p=r*Math.sin(a);svg.appendChild(el("circle",{cx:X(q),cy:Y(p),r:5,fill:col("--ink")}));svg.appendChild(el("text",{x:X(q)+8,y:Y(p)-6},lab));return{q,p};};
+    const A=pt(1.15,6.5,"A");const Bp=pt(.55,6.5,"B");
+    if(stage===0)return svg;
+    pt(.85,4.2,"C");pt(.95,8.4,"D");
+    if(t>.98){
+      svg.appendChild(el("line",{x1:X(A.q),y1:Y(A.p),x2:X(A.q),y2:Y(Bp.p),class:"dash"}));
+      svg.appendChild(el("line",{x1:X(A.q),y1:Y(Bp.p),x2:X(Bp.q),y2:Y(Bp.p),class:"dash"}));
+      svg.appendChild(el("text",{x:X(A.q)-6,y:Y((A.p+Bp.p)/2),"text-anchor":"end"},"lost"));
+      svg.appendChild(el("text",{x:X((A.q+Bp.q)/2),y:Y(Bp.p)+16,"text-anchor":"middle"},"gained"));}
+    return svg;
+  }
+};
+function render(kind,o,stage,t=1){return DG[kind](o||{},stage,t);}
+function animateInto(box,kind,o){
+  const reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(reduce){box.replaceChildren(render(kind,o,1,1));return;}
+  const t0=performance.now(),dur=900;
+  (function f(now){const t=Math.min(1,(now-t0)/dur);const e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;box.replaceChildren(render(kind,o,1,t>=1?1:Math.min(e,.97)));if(t<1)requestAnimationFrame(f);})(t0);
+}
+
+/* ---------- content ---------- */
+const PQ=["Price ↑, quantity ↑","Price ↑, quantity ↓","Price ↓, quantity ↑","Price ↓, quantity ↓"];
+const WHICH=["Demand curve","Supply curve"],DIR=["Shifts left","Shifts right"];
+function shiftSteps(curve,dir){
+  const pq=curve==="D"?(dir>0?0:3):(dir>0?2:1);
+  return [
+    {q:"Which curve shifts?",o:WHICH,a:curve==="D"?0:1,h:curve==="D"?"This changes how much consumers want to buy at every price. That's a non-price determinant of demand.":"This changes how much firms are willing and able to sell at every price. That's a non-price determinant of supply."},
+    {q:"Which way does it shift?",o:DIR,a:dir>0?1:0,h:"Right = more at every price (an increase). Left = less at every price (a decrease)."},
+    {q:"What happens to equilibrium price and quantity?",o:PQ,a:pq,h:"Find where the new curve crosses the curve that did NOT move."}
+  ];
+}
+const TOPICS=[
+ {id:"dem",name:"Shifts in demand",spec:"1.2.2"},{id:"sup",name:"Shifts in supply",spec:"1.2.6"},
+ {id:"ela",name:"Elasticity & the size of changes",spec:"1.2.3–1.2.7"},{id:"sur",name:"Consumer & producer surplus",spec:"1.2.8"},
+ {id:"tax",name:"Indirect taxes & subsidies",spec:"1.2.9"},{id:"ctl",name:"Maximum & minimum prices",spec:"1.4.1"},
+ {id:"ext",name:"Externalities",spec:"1.3.2"},{id:"ppf",name:"PPF & opportunity cost",spec:"1.1.4"}
+];
+const SC=[
+{id:"d1",topic:"dem",title:"Rising real incomes",ctx:"Real incomes in the UK rise. Show the effect on the market for restaurant meals (a normal good).",kind:"shift",o:{curve:"D",dir:1},steps:shiftSteps("D",1),
+  chain:["Restaurant meals are a normal good (YED > 0), so higher real incomes raise demand at every price.","Demand shifts right from D1 to D2.","At P1 there is now excess demand, so price is bid up.","The higher price causes an extension of supply along S1.","New equilibrium at P2, Q2: price and quantity both rise."],
+  tip:"Say 'extension of supply', not 'supply increases'. The supply curve did not move.",eval:"The size of the rise depends on the YED of restaurant meals and on how price elastic supply is. Rising incomes may also be offset by higher interest rates or inflation."},
+{id:"t1",topic:"tax",title:"Tax on cigarettes",ctx:"The government raises the specific (per-unit) tax on cigarettes. Demand is price inelastic.",kind:"tax",
+  steps:[{q:"Which curve moves?",o:["Demand shifts left","Supply shifts up/left by the tax"],a:1,h:"A tax is a cost paid by producers to the government."},{q:"The new supply curve is…",o:["Parallel to the old one","Pivoted from the origin"],a:0,h:"A specific tax is a fixed amount per unit (an ad valorem tax would pivot it)."},{q:"Who pays most of the tax (bears the greater incidence)?",o:["Consumers","Producers"],a:0,h:"Inelastic demand means producers can pass most of it on as a higher price."}],
+  chain:["A specific tax adds a fixed amount to producers' costs, so supply shifts vertically up by the tax (S to S + tax).","Price rises from P1 to P2 and quantity falls from Q1 to Q2.","The vertical distance P2 to P3 is the tax per unit. Producers receive P3 after paying the tax.","Consumer incidence = (P2 − P1) × Q2. Producer incidence = (P1 − P3) × Q2.","Because demand is price inelastic, consumers bear most of the tax, and quantity falls only a little."],
+  tip:"Always mark the tax per unit as the vertical gap between the two supply curves at Q2.",eval:"Inelastic demand means a small fall in smoking but a large tax revenue. Good for the Treasury, less effective at cutting consumption. It is regressive and may encourage illegal trade."},
+{id:"x1",topic:"ext",title:"Factory pollution",ctx:"A chemical factory pollutes a river, harming local fishing. Analyse the market outcome.",kind:"negext",
+  steps:[{q:"This is a negative externality in…",o:["Production","Consumption"],a:0,h:"The harm comes from making the good."},{q:"Which curve lies above the MPC?",o:["MSC","MSB"],a:0,h:"Social cost = private cost + external cost."},{q:"Compared with the social optimum, the free market…",o:["Over-produces","Under-produces"],a:0,h:"Firms ignore the external cost, so they produce where MPC = MPB."}],
+  chain:["The firm considers only its private costs (MPC), but pollution imposes external costs on third parties.","So MSC = MPC + external cost, and lies above MPC.","The free market produces at Q1, where MPC = MPB.","The social optimum is Q*, where MSC = MSB.","Q1 > Q*: the good is over-produced and under-priced, creating the shaded welfare loss triangle. This is market failure."],
+  tip:"The welfare loss triangle points TOWARDS the social optimum Q*. Shade only the area between MSC and MSB from Q* to Q1.",eval:"The external cost is hard to measure, which makes it hard to set the right tax. Solutions include taxes, regulation and tradable pollution permits, each with drawbacks."}
+];
+
+/* ---------- views ---------- */
+const app=document.getElementById("app");
+const ETSY="https://www.etsy.com/uk/shop/VectorDigitalPlus";
+TOPICS.splice(0,TOPICS.length,...TOPICS.filter(t=>SC.some(s=>s.topic===t.id)));
+const h=(html)=>{const d=document.createElement("div");d.innerHTML=html;return d;};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const md=s=>esc(s).replace(/(^|\s)_(.+?)_(?=[\s.,:;!?]|$)/g,"$1<em>$2</em>");
+function doneCount(list){return list.filter(s=>store.done[s.id]).length;}
+function toTop(){window.scrollTo({top:0});}
+
+function home(){
+  const n=doneCount(SC);
+  app.innerHTML=`
+  <div class="card"><h2>Try 3 Theme 1 diagrams free</h2>
+   <p class="muted">Work out which curve moves, which way, and why. Then see it animate and read the full chain of analysis.</p>
+   <div class="bar"><i style="width:${n/SC.length*100}%"></i></div><p class="muted">${n} of ${SC.length} diagrams mastered${store.best?` · best quick test: ${store.best}/10`:""}</p></div>
+  <div class="grid">
+   <button class="mode" data-go="topics"><b>Practise by topic</b><span class="muted">Step-by-step questions with hints</span></button>
+   <button class="mode" data-go="quiz"><b>Quick test</b><span class="muted">Full version: 10 mixed questions, scored</span></button>
+   <button class="mode" data-go="library"><b>Diagram library</b><span class="muted">Every diagram, finished and labelled</span></button>
+   <button class="mode" data-go="checklist"><b>Exam checklist</b><span class="muted">How to draw for full marks</span></button>
+  </div><div class="card" style="margin-top:14px"><h3>Want all 20 diagrams?</h3><p>The full trainer covers every Theme 1 diagram: demand and supply shifts, elasticity, surplus, tax and subsidy, price controls, externalities and the PPF, plus a scored 10-question test.</p><a class="btn" href="${ETSY}" target="_blank" rel="noopener">Get it on Etsy</a></div>`;
+  app.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>route(b.dataset.go));
+}
+function topics(){
+  app.innerHTML=`<div class="card"><h2>Practise by topic</h2><div id="tl"></div></div>`;
+  const tl=app.querySelector("#tl");
+  TOPICS.forEach(tp=>{const list=SC.filter(s=>s.topic===tp.id),d=doneCount(list);
+    const b=h(`<button class="topic"><span><b>${tp.name}</b><small>Spec ${tp.spec} · ${list.length} diagrams</small></span><span class="pill ${d===list.length?"done":""}">${d}/${list.length}</span></button>`).firstChild;
+    b.onclick=()=>practise(list,0,{mode:"topic"});tl.appendChild(b);});
+}
+/* run one scenario: steps one at a time; mode quiz scores first-attempt correctness */
+function practise(list,idx,run){
+  const s=list[idx];let step=0,firstTry=true;
+  app.innerHTML=`<div class="card">
+   <p class="muted">${run.mode==="quiz"?`Question ${idx+1} of ${list.length} · score ${run.score}`:`${TOPICS.find(t=>t.id===s.topic).name} · ${idx+1} of ${list.length}`}</p>
+   <h2>${esc(s.title)}</h2><p class="ctx">${md(s.ctx)}</p>
+   <div id="dg"></div><div class="done-steps" id="ds"></div><div id="q"></div></div><div id="after"></div>`;
+  const dg=app.querySelector("#dg");dg.replaceChildren(render(s.kind,s.o,0));
+  const qbox=app.querySelector("#q"),ds=app.querySelector("#ds");
+  function ask(){
+    const st=s.steps[step];firstTry=true;
+    qbox.innerHTML=`<div class="stepq">Step ${step+1} of ${s.steps.length}: ${esc(st.q)}</div><div class="opts ${st.o.length>2&&st.o[0].length>24?"one":""}"></div><div id="fb"></div>`;
+    const opts=qbox.querySelector(".opts"),fb=qbox.querySelector("#fb");
+    st.o.forEach((txt,i)=>{const b=document.createElement("button");b.className="opt";b.textContent=txt;opts.appendChild(b);
+      b.onclick=()=>{
+        if(i===st.a){b.classList.add("right");opts.querySelectorAll(".opt").forEach(x=>x.disabled=true);
+          if(run.mode==="quiz"&&firstTry)run.pts++; if(!firstTry)run.slips=(run.slips||0)+1;
+          fb.innerHTML=`<div class="fb ok">Correct. ${esc(st.h)}</div>`;
+          setTimeout(()=>{ds.appendChild(h("<div>"+esc(st.q)+" → <b>"+esc(st.o[st.a])+"</b></div>").firstChild);step++;step<s.steps.length?ask():finish();},run.mode==="quiz"?700:1100);
+        }else{firstTry=false;b.classList.add("wrong");b.disabled=true;fb.innerHTML=`<div class="fb no">Not quite. Hint: ${esc(st.h)}</div>`;}
+      };});
+  }
+  function finish(){
+    qbox.innerHTML="";animateInto(dg,s.kind,s.o);
+    const perfect=!run._miss;store.done[s.id]=true;save();
+    if(run.mode==="quiz"){run.score+= (run.pts===s.steps.length?1:0);}
+    const after=app.querySelector("#after");
+    after.innerHTML=`<div class="card"><h3>Chain of analysis</h3><ol class="chain">${s.chain.map(c=>`<li>${md(c)}</li>`).join("")}</ol>
+      <div class="tip"><b>Exam tip:</b> ${md(s.tip)}</div><div class="eval"><b>Evaluate:</b> ${md(s.eval)}</div>
+      <div class="row noprint"><button class="btn ghost" id="again">Replay animation</button><button class="btn" id="next">${idx+1<list.length?"Next diagram →":(run.mode==="quiz"?"See score":"Finish topic")}</button></div></div>`;
+    after.querySelector("#again").onclick=()=>animateInto(dg,s.kind,s.o);
+    after.querySelector("#next").onclick=()=>{if(idx+1<list.length){run.pts=0;practise(list,idx+1,run);toTop();}else if(run.mode==="quiz")quizEnd(run,list.length);else topics();};
+    after.scrollIntoView({behavior:"smooth",block:"start"});
+  }
+  run.pts=0;ask();
+}
+function quiz(){const list=[...SC].sort(()=>Math.random()-.5);practise(list,0,{mode:"quiz",score:0,pts:0});}
+function quizEnd(run,n){
+  if(run.score>store.best){store.best=run.score;save();}
+  app.innerHTML=`<div class="card"><h2>Quick test complete</h2><div class="score">${run.score}/${n}</div>
+   <p class="muted" style="text-align:center">A point is scored only when every step of a diagram is right first time.</p>
+   <div class="row"><button class="btn ghost" id="h">Home</button><button class="btn" id="r">Try another 10</button></div></div>`;
+  app.querySelector("#h").onclick=()=>route("home");app.querySelector("#r").onclick=()=>route("quiz");
+}
+function library(){
+  app.innerHTML=`<div class="card noprint"><h2>Diagram library</h2><p class="muted">Every diagram in its finished, fully labelled form. Use Print to make a revision sheet.</p><button class="btn ghost" onclick="print()">Print / save as PDF</button></div><div id="lib"></div>`;
+  const lib=app.querySelector("#lib");
+  TOPICS.forEach(tp=>SC.filter(s=>s.topic===tp.id).forEach(s=>{
+    const c=h(`<div class="card"><p class="muted">${tp.name}</p><h3>${esc(s.title)}</h3><p>${md(s.ctx)}</p><div class="d"></div><ol class="chain">${s.chain.map(x=>`<li>${md(x)}</li>`).join("")}</ol></div>`).firstChild;
+    c.querySelector(".d").appendChild(render(s.kind,s.o,1,1));lib.appendChild(c);}));
+}
+function checklist(){
+  app.innerHTML=`<div class="card"><h2>Exam checklist: drawing diagrams</h2>
+  <ol class="check">
+   <li><b>Big and in pencil.</b> Use at least a third of a page and a ruler for axes and curves.</li>
+   <li><b>Label both axes.</b> Price (P) and Quantity (Q). For externalities, use "Costs and benefits".</li>
+   <li><b>Label every curve,</b> including new ones: D1, D2, S1, S2, MSC, MSB…</li>
+   <li><b>Show the original equilibrium</b> with dashed lines to both axes: P1, Q1.</li>
+   <li><b>Show the new equilibrium</b> the same way: P2, Q2.</li>
+   <li><b>Arrow the shift</b> so the direction is obvious.</li>
+   <li><b>Shade and name areas:</b> tax incidence, cost of subsidy, welfare loss, CS and PS.</li>
+   <li><b>Refer to the diagram in your writing:</b> "as shown by the shift from S1 to S2…".</li>
+   <li><b>Use the right words:</b> a <em>shift</em> of a curve is caused by a non-price factor; an <em>extension/contraction</em> is a movement along a curve.</li>
+  </ol>
+  <h3>Chain of analysis (KAA)</h3><p>Cause → which curve, which way → disequilibrium (excess demand or supply) → price change → movement along the other curve → new equilibrium.</p>
+  <h3>Then evaluate</h3><p>Magnitude (elasticity), time period (short vs long run), other factors changing at the same time, and who wins and loses.</p></div>`;
+}
+function route(r){({home,topics,quiz,library,checklist})[r]();toTop();}
+document.getElementById("homeBtn").onclick=()=>route("home");
+document.getElementById("darkBtn").onclick=()=>{document.body.classList.toggle("dark");store.dark=document.body.classList.contains("dark");save();route("home");};
+route("home");
+</script>
+</body>
+</html>
