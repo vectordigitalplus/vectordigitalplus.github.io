@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Safe to Spend – Free Demo</title></head>
+<body style="font-family:system-ui;padding:24px">Loading the demo…
+<script>
+(async function(){
+  var APP="https://xgymichael822-sudo.github.io/safe-to-spend/";
+  var ETSY="https://www.etsy.com/uk/shop/VectorDigitalPlus";
+  function ds(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+  function add(n){var d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()+n);return d;}
+  function dom(n){return Math.min(add(n).getDate(),28);}
+  function seed(){
+    var now=Date.now();
+    return {v:1,setup:true,
+      pay:{freq:"monthly",day:dom(9),shift:true,anchor:ds(add(-21))},
+      balance:684.37,balanceDate:ds(add(0)),balanceTs:now,cushion:25,
+      bills:[
+        {id:"d1",name:"Council Tax",amount:148,freq:"counciltax",day:dom(2),anchor:ds(add(-28))},
+        {id:"d2",name:"Energy (gas & electric)",amount:96,freq:"monthly",day:dom(4),anchor:ds(add(-26))},
+        {id:"d3",name:"Phone",amount:18,freq:"monthly",day:dom(6),anchor:ds(add(-24))},
+        {id:"d4",name:"Streaming",amount:10.99,freq:"monthly",day:dom(7),anchor:ds(add(-23))},
+        {id:"d5",name:"Rent",amount:825,freq:"monthly",day:dom(10),anchor:ds(add(-20))},
+        {id:"d6",name:"TV Licence",amount:174.5,freq:"yearly",day:dom(40),anchor:ds(add(40))}
+      ],
+      pots:[
+        {id:"p1",name:"Christmas",perPay:40,target:300,saved:160,paused:false,doneFor:""},
+        {id:"p2",name:"Car repairs",perPay:25,target:500,saved:210,paused:false,doneFor:""}
+      ],
+      spends:[
+        {id:"s1",date:ds(add(-2)),ts:now-2*864e5,amount:23.40,note:"Big shop"},
+        {id:"s2",date:ds(add(-1)),ts:now-864e5,amount:3.20,note:"Coffee"},
+        {id:"s3",date:ds(add(-1)),ts:now-864e5+3600e3,amount:12.99,note:"Takeaway"},
+        {id:"s4",date:ds(add(0)),ts:now-3600e3,amount:4.85,note:"Bus fare"}
+      ],
+      paid:{},wishes:[{id:"w1",name:"New headphones",price:59,ts:now-3*864e5}],letGo:18,letGoCount:2,checkins:[]};
+  }
+  // In-memory storage: the demo never touches the real app's saved data.
+  var mem={};
+  window.DEMO_LS={getItem:function(k){if(!(k in mem)&&/safe2spend/.test(k))mem[k]=JSON.stringify(seed());return k in mem?mem[k]:null;},
+    setItem:function(k,v){mem[k]=String(v);},removeItem:function(k){delete mem[k];},clear:function(){mem={};},key:function(i){return Object.keys(mem)[i]||null;},get length(){return Object.keys(mem).length;}};
+  try{
+    var src=await (await fetch(APP+"index.html",{cache:"no-store"})).text();
+    src=src.split("localStorage").join("DEMO_LS")
+           .split("'serviceWorker' in navigator").join("false")
+           .split('"serviceWorker" in navigator').join("false")
+           .replace(/<link[^>]+rel=["']manifest["'][^>]*>/i,"");
+    var bar='<div id="demoBar" style="position:sticky;top:0;z-index:99999;background:#2f5d50;color:#fff;font:600 14px/1.35 system-ui;padding:10px 12px;text-align:center">'+
+      'FREE DEMO with example numbers. Try anything: nothing is saved. '+
+      '<a href="'+ETSY+'" target="_blank" rel="noopener" style="color:#ffe9a8;text-decoration:underline">Get your own on Etsy</a> · '+
+      '<a href="#" onclick="location.reload();return false" style="color:#fff;opacity:.85">Reset</a></div>';
+    src=src.replace(/<body([^>]*)>/i,function(m){return m+bar;});
+    var store=window.DEMO_LS;
+    document.open();document.write(src);document.close();
+    window.DEMO_LS=store;
+  }catch(e){document.body.innerHTML='<p style="font-family:system-ui;padding:24px">The demo could not load. Please refresh, or visit <a href="'+ETSY+'">the Etsy shop</a>.</p>';}
+})();
+</script>
+</body></html>
